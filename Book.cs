@@ -1,60 +1,70 @@
-using Microsoft.VisualBasic;
+using Spectre.Console;
+using System.Runtime.InteropServices;
 
 namespace bookstore_system;
 
 public class Book
 {
-    private string _title;
-    private string _author;
-    private string _description;
-    private int _publication;
-    private int _pages;
-    private double _price;
-    private int _units;
-    private BookFormat _format;
+    private string Title { get; set; }
+    private string Author { get; set; }
+    private int Pages { get; set; }
+    private string ISBN { get; set; }
 
-    public Book(string title, int publication, double price, int units, BookFormat format, string author, int pages)
+    public Book(string title, int pages, string isbn)
     {
-        _title = title;
-        _description = "This book doesn't have a description yet.";
-        _publication = publication;
-        _price = price;
-        _units = units;
-        _format = format;
-        _author = author;
-        _pages = pages;
+        Title = title;
+        Author = "Unknown";
+        Pages = pages;
+        ISBN = isbn;
+    }
+    public Book(string title, string author, string isbn)
+    {
+        Title = title;
+        Author = author;
+        ISBN = isbn;
     }
 
-    public Book(string title, string description, int publication, double price, int units, BookFormat format, string author, int pages)
+    public Book(string title, string author, int pages, string isbn) 
     {
-        _title = title;
-        _description = description;
-        _publication = publication;
-        _price = price;
-        _units = units;
-        _format = format;
-        _author = author;
-        _pages = pages;
+        Title = title;
+        Author = author;
+        Pages = pages;
+        ISBN = isbn;
     }
 
-    public enum BookFormat
+    public static Book CreateBook()
     {
-        // ReSharper disable once InconsistentNaming
-        eBook,
-        Paperback,
-        Hardcover
+        var title = AnsiConsole.Prompt(
+            new TextPrompt<string>("Title: ")
+            .PromptStyle("darkorange"));
+
+        var author = AnsiConsole.Prompt(
+            new TextPrompt<string>("[gray][[optional]][/] Author: ")
+            .AllowEmpty().PromptStyle("darkorange"));
+
+        var pages = AnsiConsole.Prompt(
+            new TextPrompt<int>("[gray][[optional]][/] Pages: ")
+            .DefaultValue(0).PromptStyle("darkorange"));
+
+        var isbn = AnsiConsole.Prompt(
+            new TextPrompt<string>("ISBN:")
+            .PromptStyle("darkorange"));
+
+        return new Book(title, author, pages, isbn);
     }
 
-    public string GetBookInformation()
+    public static void DisplayBookInformation(Book book)
     {
-        string information = $"Title: {_title}\n";
-        information += $"Author: {_author}\n";
-        information += $"Description: {_description}\n";
-        information += $"Year: {_publication}\n";
-        information += $"Price: {_price}\n";
-        information += $"Units: {_units}\n";
-        information += $"Format: {_format}\n";
-        information += $"Pages: {_pages}\n";
-        return information;
+        string title = book.Title;
+        string author = book.Author;
+        string pages = Convert.ToString(book.Pages);
+        string isbn = book.ISBN;
+
+        var table = new Table();
+
+        table.AddColumns("Title", "Author", "Pages", "ISBN");
+        table.AddRow(title, author, pages, isbn);
+
+        AnsiConsole.Write(table);
     }
 }

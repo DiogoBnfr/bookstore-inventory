@@ -1,10 +1,12 @@
-﻿namespace bookstore_system;
+﻿using Spectre.Console;
+
+namespace bookstore_system;
 
 internal static class Program
 {
     public static void Main(string[] args)
     {
-        Book book = HandlerDB.CreateBook();
-        Console.WriteLine(book.GetBookInformation());
+        Book book = Book.CreateBook();
+        Book.DisplayBookInformation(book);
     }
 }
