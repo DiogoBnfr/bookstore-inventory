@@ -1,5 +1,4 @@
 using Spectre.Console;
-using System.Runtime.InteropServices;
 
 namespace bookstore_system;
 
@@ -10,18 +9,21 @@ public class Book
     private int Pages { get; set; }
     private string ISBN { get; set; }
 
-    public Book(string title, int pages, string isbn)
-    {
-        Title = title;
-        Author = "Unknown";
-        Pages = pages;
-        ISBN = isbn;
+    public string GetTitle() 
+    { 
+        return Title;
     }
-    public Book(string title, string author, string isbn)
+    public string GetAuthor() 
+    { 
+        return Author; 
+    }
+    public int GetPages() 
     {
-        Title = title;
-        Author = author;
-        ISBN = isbn;
+        return Pages;
+    }
+    public string GetISBN() 
+    { 
+        return ISBN; 
     }
 
     public Book(string title, string author, int pages, string isbn) 
@@ -35,20 +37,18 @@ public class Book
     public static Book CreateBook()
     {
         var title = AnsiConsole.Prompt(
-            new TextPrompt<string>("Title: ")
-            .PromptStyle("darkorange"));
+            new TextPrompt<string>("Title: "));
 
         var author = AnsiConsole.Prompt(
             new TextPrompt<string>("[gray][[optional]][/] Author: ")
-            .AllowEmpty().PromptStyle("darkorange"));
+            .AllowEmpty().DefaultValue("Unknown"));
 
         var pages = AnsiConsole.Prompt(
             new TextPrompt<int>("[gray][[optional]][/] Pages: ")
-            .DefaultValue(0).PromptStyle("darkorange"));
+            .DefaultValue(0));
 
         var isbn = AnsiConsole.Prompt(
-            new TextPrompt<string>("ISBN:")
-            .PromptStyle("darkorange"));
+            new TextPrompt<string>("ISBN:"));
 
         return new Book(title, author, pages, isbn);
     }
@@ -62,8 +62,9 @@ public class Book
 
         var table = new Table();
 
-        table.AddColumns("Title", "Author", "Pages", "ISBN");
-        table.AddRow(title, author, pages, isbn);
+        table.AddColumns("Title", "Author", "Pages", "ISBN")
+            .AddRow(title, author, pages, isbn)
+            .Expand();
 
         AnsiConsole.Write(table);
     }
