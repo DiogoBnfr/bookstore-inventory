@@ -64,7 +64,7 @@ public class Book
 
         table.AddColumns("Title", "Author", "Pages", "ISBN")
             .AddRow(title, author, pages, isbn)
-            .Expand();
+            .Expand().Border(TableBorder.Horizontal);
 
         AnsiConsole.Write(table);
     }
