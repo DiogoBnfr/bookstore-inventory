@@ -36,6 +36,9 @@ public class Book
 
     public static Book CreateBook()
     {
+        var rule = new Rule("CREATE");
+        AnsiConsole.Write(rule);
+
         var title = AnsiConsole.Prompt(
             new TextPrompt<string>("Title: "));
 
@@ -67,5 +70,12 @@ public class Book
             .Expand().Border(TableBorder.Horizontal);
 
         AnsiConsole.Write(table);
+    }
+
+    public enum Filter { 
+        ISBN,
+        Title,
+        Author,
+        Pages
     }
 }

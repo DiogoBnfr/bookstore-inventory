@@ -50,13 +50,25 @@ public class HandlerDB
         }
     }
 
-    public static DataTable Read()
+    public static DataTable Read(Book.Filter? filter = null, string? search = null)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
 
             string query = "SELECT * FROM Book";
+
+            if (filter != null && search != null)
+            {
+                if (filter != Book.Filter.Pages)
+                {
+                    query += $"WHERE {filter} = '{search}'";
+                }
+                else 
+                {
+                    query += $"WHERE {filter} = {search}";
+                }
+            }
 
             DataTable table = new DataTable();
 
@@ -77,8 +89,70 @@ public class HandlerDB
                     connection.Close();
                 }
             }
-
             return table;
+        }
+    }
+
+    public static void Update(string ISBN, string newTitle, string newAuthor, int newPages)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            int queryFilters = 0;
+
+            string query = "UPDATE Book SET ";
+            if (newTitle != "") 
+            { 
+                query += "Title = @newTitle"; 
+                queryFilters++;
+            }
+            if (newAuthor != "") 
+            {
+                if (queryFilters > 0) query += ", ";
+                query += "Author = @newAuthor";
+                queryFilters++;
+            }
+            if (newPages != 0) 
+            {
+                if (queryFilters > 0) query += ", ";
+                query += "Pages = @newPages"; 
+            }
+            query += " WHERE ISBN = @ISBN";
+
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                try
+                {
+                    command.Parameters.AddWithValue("@ISBN", ISBN);
+                    if (newTitle != "") command.Parameters.AddWithValue("@newTitle", newTitle);
+                    if (newAuthor != "") command.Parameters.AddWithValue("@newAuthor", newAuthor);
+                    if (newPages != 0) command.Parameters.AddWithValue("@newPages", newPages);
+
+                    Console.WriteLine(query);
+                    Console.ReadKey();
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        AnsiConsole.Markup("[green]Data updated succefully![/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.Markup("[red]Update failed or no rows matched the criteria.[/]");
+                    }
+                    Thread.Sleep(1000);
+                } 
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                finally 
+                { 
+                    connection.Close(); 
+                }
+            }
         }
     }
 }
