@@ -9,13 +9,9 @@ internal static class Program
     {
         while (true)
         {
-            var font = FigletFont.Load("../../../fonts/alligator.flf.txt");
+            InterfaceHelpers.ShowLogo();
 
-            AnsiConsole.Write(
-                new FigletText(font, "bookstats")
-                .Centered().Color(Color.White));
-
-            Interfaces.ShowTable(HandlerDB.Read());
+            InterfaceHelpers.ShowTable(HandlerDB.Read());
 
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .AddChoices(new[] { "Create" , "Update", "Delete", "Filter", "Quit" })
