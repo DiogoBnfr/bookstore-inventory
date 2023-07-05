@@ -115,6 +115,27 @@ namespace bookstore_system
             }
             Console.Clear();
         }
+
+        public static void FilterBook()
+        {
+            var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .AddChoices(new[] { "Title", "Author", "Pages" })
+                .HighlightStyle(Style.WithForeground(Color.Black)
+                .Background(Color.White)).Title("Filter by: "));
+
+            if (selection == "Title")
+            {
+
+            }
+            if (selection == "Author")
+            {
+
+            }
+            if (selection == "Pages")
+            {
+
+            }
+        }
     }
 
     internal class InterfaceHelpers

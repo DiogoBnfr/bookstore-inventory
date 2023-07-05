@@ -1,7 +1,6 @@
 using Spectre.Console;
 using System.Data;
 using System.Data.SqlClient;
-using System.Reflection.Metadata.Ecma335;
 
 namespace bookstore_system;
 
@@ -51,25 +50,13 @@ public class HandlerDB
         }
     }
 
-    public static DataTable Read(Book.Filter? filter = null, string? search = null)
+    public static DataTable Read()
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
 
             string query = "SELECT * FROM Book";
-
-            if (filter != null && search != null)
-            {
-                if (filter != Book.Filter.Pages)
-                {
-                    query += $"WHERE {filter} = '{search}'";
-                }
-                else 
-                {
-                    query += $"WHERE {filter} = {search}";
-                }
-            }
 
             DataTable table = new DataTable();
 
