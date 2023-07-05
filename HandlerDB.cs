@@ -130,9 +130,6 @@ public class HandlerDB
                     if (newAuthor != "") command.Parameters.AddWithValue("@newAuthor", newAuthor);
                     if (newPages != 0) command.Parameters.AddWithValue("@newPages", newPages);
 
-                    Console.WriteLine(query);
-                    Console.ReadKey();
-
                     int rowsAffected = command.ExecuteNonQuery();
 
                     if (rowsAffected > 0)
@@ -146,6 +143,44 @@ public class HandlerDB
                     Thread.Sleep(1000);
                 } 
                 catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                finally 
+                { 
+                    connection.Close(); 
+                }
+            }
+        }
+    }
+
+    public static void Delete(string ISBN)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "DELETE FROM Book WHERE ISBN = @ISBN";
+
+            using (SqlCommand command = new SqlCommand(query, connection)) 
+            {
+                try
+                {
+                    command.Parameters.AddWithValue("@ISBN", ISBN);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0) 
+                    {
+                        AnsiConsole.Markup("[green]Data deleted succefully![/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.Markup("[red]Deletion failed or no rows matched the criteria.[/]");
+                    }
+                    Thread.Sleep(1000);
+                }
+                catch (SqlException ex)
                 {
                     AnsiConsole.WriteException(ex);
                 }

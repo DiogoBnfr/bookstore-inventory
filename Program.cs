@@ -18,7 +18,7 @@ internal static class Program
             Interfaces.ShowTable(HandlerDB.Read());
 
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .AddChoices(new[] { "Create" , "Update", "Delete", "Search" })
+                .AddChoices(new[] { "Create" , "Update", "Delete", "Search", "Quit" })
                 .HighlightStyle(Style.WithForeground(Color.Black)
                 .Background(Color.White)));
 
@@ -28,7 +28,15 @@ internal static class Program
             }
             if (selection == "Update")
             {
-                Interfaces.Update();
+                Interfaces.UpdateBook();
+            }
+            if (selection == "Delete")
+            {
+                Interfaces.DeleteBook();
+            }
+            if (selection == "Quit")
+            {
+                break;
             }
             Console.Clear();
         }
