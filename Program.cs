@@ -9,16 +9,12 @@ internal static class Program
     {
         while (true)
         {
-            var font = FigletFont.Load("../../../fonts/alligator.flf.txt");
+            InterfaceHelpers.ShowLogo();
 
-            AnsiConsole.Write(
-                new FigletText(font, "bookstats")
-                .Centered().Color(Color.White));
-
-            Interfaces.ShowTable(HandlerDB.Read());
+            InterfaceHelpers.ShowTable(HandlerDB.Read());
 
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .AddChoices(new[] { "Create" , "Update", "Delete", "Search", "Quit" })
+                .AddChoices(new[] { "Create" , "Update", "Delete", "Filter", "Quit" })
                 .HighlightStyle(Style.WithForeground(Color.Black)
                 .Background(Color.White)));
 
@@ -33,6 +29,10 @@ internal static class Program
             if (selection == "Delete")
             {
                 Interfaces.DeleteBook();
+            }
+            if (selection == "Filter")
+            {
+                Interfaces.FilterBook();
             }
             if (selection == "Quit")
             {

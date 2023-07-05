@@ -1,7 +1,6 @@
 using Spectre.Console;
 using System.Data;
 using System.Data.SqlClient;
-using System.Reflection.Metadata.Ecma335;
 
 namespace bookstore_system;
 
@@ -51,7 +50,7 @@ public class HandlerDB
         }
     }
 
-    public static DataTable Read(Book.Filter? filter = null, string? search = null)
+    public static DataTable Read(string filter = "")
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -59,16 +58,9 @@ public class HandlerDB
 
             string query = "SELECT * FROM Book";
 
-            if (filter != null && search != null)
+            if (filter != "")
             {
-                if (filter != Book.Filter.Pages)
-                {
-                    query += $"WHERE {filter} = '{search}'";
-                }
-                else 
-                {
-                    query += $"WHERE {filter} = {search}";
-                }
+                query += filter;
             }
 
             DataTable table = new DataTable();
@@ -190,5 +182,34 @@ public class HandlerDB
                 }
             }
         }
+    }
+    
+    public static string Filter(Book.Filter filter, string condition, int pagesMin = 0, int pagesMax = 0)
+    {
+        var queryFilter  = " ";
+        
+        if (filter == Book.Filter.ISBN || filter == Book.Filter.Title || filter == Book.Filter.Author)
+        {
+            queryFilter += $"WHERE { filter } LIKE '{ condition }%'";
+            Console.Write(queryFilter);
+            Console.ReadLine();
+        }
+        else
+        {
+            if (condition == "Greater than")
+            {
+                queryFilter += $"WHERE { filter } > { pagesMin + 1 }";
+            }
+            if (condition == "Less than")
+            {
+                queryFilter += $"WHERE {filter} < { pagesMax - 1 }";
+            }
+            if (condition == "Between")
+            {
+                queryFilter += $"WHERE { filter } BETWEEN { pagesMin + 1 } AND { pagesMax - 1 }";
+            }
+        }
+
+        return queryFilter;
     }
 }
