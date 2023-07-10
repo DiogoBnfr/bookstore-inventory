@@ -23,9 +23,8 @@ namespace bookstore_system
                 if (input == "Yes")
                 {
                     HandlerDB.Insert(book);
-                    break;
                 }
-                InterfaceHelpers.EraseLine(10);
+                break;
             }
             Console.Clear();
         }
