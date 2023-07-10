@@ -55,7 +55,12 @@ namespace bookstore_system
                     .AllowEmpty().DefaultValue(0)
                     .HideDefaultValue());
 
-                HandlerDB.Update(ISBN, newTitle, newAuthor, newPages);
+                int newPagesRead = AnsiConsole.Prompt(
+                    new TextPrompt<int>("Pages Read: ")
+                    .AllowEmpty().DefaultValue(0)
+                    .HideDefaultValue());
+
+                HandlerDB.Update(ISBN, newTitle, newAuthor, newPages, newPagesRead);
                 break;
             }
         }
@@ -173,18 +178,22 @@ namespace bookstore_system
         {
             var table = new Table();
 
-            table.AddColumns("ISBN", "Title", "Author", "Pages").Expand().Border(TableBorder.AsciiDoubleHead);
+            table.AddColumns("ISBN", "Title", "Author", "Pages", "Percentage")
+                .Expand().Border(TableBorder.AsciiDoubleHead);
 
+                    
 
             if (dataTable.Rows.Count >= 1)
             {
                 foreach (DataRow row in dataTable.Rows)
                 {
+
                     table.AddRow(
                         row[0].ToString(),
                         row[1].ToString(),
                         row[2].ToString(),
-                        row[3].ToString());
+                        row[4] + "/" + row[3],
+                        Book.Percentage((int)row[3], (int)row[4]));
                 }
                 AnsiConsole.Write(table);
             }
