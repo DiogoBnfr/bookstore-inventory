@@ -8,23 +8,13 @@ public class Book
     private string Author { get; set; }
     private int Pages { get; set; }
     private string ISBN { get; set; }
+    private int PagesRead { get; set; }
 
-    public string GetTitle() 
-    { 
-        return Title;
-    }
-    public string GetAuthor() 
-    { 
-        return Author; 
-    }
-    public int GetPages() 
-    {
-        return Pages;
-    }
-    public string GetISBN() 
-    { 
-        return ISBN; 
-    }
+    public string GetTitle() { return Title; }
+    public string GetAuthor() { return Author; }
+    public int GetPages() { return Pages; }
+    public int GetPagesRead() { return PagesRead; }
+    public string GetISBN() { return ISBN; }
 
     public Book(string title, string author, int pages, string isbn) 
     {
@@ -32,6 +22,7 @@ public class Book
         Author = author;
         Pages = pages;
         ISBN = isbn;
+        PagesRead = 0;
     }
 
     public static Book CreateBook()
@@ -62,11 +53,12 @@ public class Book
         string author = book.Author;
         string pages = Convert.ToString(book.Pages);
         string isbn = book.ISBN;
+        string percentage = Percentage(book.Pages, book.PagesRead);
 
         var table = new Table();
 
-        table.AddColumns("Title", "Author", "Pages", "ISBN")
-            .AddRow(title, author, pages, isbn)
+        table.AddColumns("Title", "Author", "Pages", "ISBN", "Percentage")
+            .AddRow(title, author, pages, isbn, percentage)
             .Expand().Border(TableBorder.AsciiDoubleHead);
 
         AnsiConsole.Write(table);
@@ -77,5 +69,38 @@ public class Book
         Title,
         Author,
         Pages
+    }
+
+    public static string Percentage(int totalPages, int pagesRead)
+    {
+        if (pagesRead > totalPages) pagesRead = totalPages;
+        double percentage = (double)pagesRead / totalPages * 100;
+        string displayPercentage = "";
+        int loop;
+        if (percentage < 10) 
+        {
+            loop = 0;
+        }
+        else if (percentage >= 10 && percentage < 100)
+        {
+            loop = Convert.ToInt32((percentage / 10) % 10);
+        }
+        else
+        {
+            loop = 10;
+        }
+        for (int i = 0; i < loop; i++)
+        {
+            displayPercentage += "#";
+        }
+
+        if (percentage >= 10)
+        {
+            return displayPercentage + " " + (int)percentage + "%";
+        }
+        else
+        {
+            return (int)percentage + "%";
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Spectre.Console;
-using System.Data;
 
 namespace bookstore_system;
 
