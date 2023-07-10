@@ -208,13 +208,19 @@ namespace bookstore_system
             }
         }
 
-        public static void ShowLogo() 
+        public static void ShowLogo()
         {
-            var font = FigletFont.Load("../../../fonts/alligator.flf.txt");
-
-            AnsiConsole.Write(
-                new FigletText(font, "bookstats")
-                .Centered().Color(Color.White));
+            if (Console.WindowWidth >= 140)
+            {
+                var font = FigletFont.Load("../../../fonts/alligator.flf.txt");
+                AnsiConsole.Write(new FigletText(font, "bookstats").Centered().Color(Color.White));
+            }
+            else
+            {
+                AnsiConsole.Markup("[red]Console width is too short to display title! Adjust to 140 columns.[/]\n");
+                Thread.Sleep(1000);
+                EraseLine(1);
+            }
         }
     }
 }
