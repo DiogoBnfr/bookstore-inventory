@@ -38,12 +38,24 @@ public class HandlerDB
                         AnsiConsole.Markup("[green]Data inserted succefully![/]");
                     }
                 }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 2627)
+                    {
+                        AnsiConsole.Markup("[red]This ISBN code already exists.[/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.Markup("[red]An error occurred: " + ex.Message + "[/]");
+                    }
+                }
                 catch (Exception ex)
                 {
                     AnsiConsole.WriteException(ex);
                 }
                 finally 
                 {
+                    Thread.Sleep(1000);
                     connection.Close();
                 }
             }
