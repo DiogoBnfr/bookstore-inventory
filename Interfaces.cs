@@ -119,7 +119,7 @@ namespace bookstore_system
                 string condition = AnsiConsole.Prompt(
                     new TextPrompt<string>("Search for: "));
 
-                queryFilter = HandlerDB.Filter(Book.Filter.Title, condition);
+                queryFilter = HandlerDB.Filter(Book.Filter.Author, condition);
 
                 HandlerDB.Read(queryFilter);
             }

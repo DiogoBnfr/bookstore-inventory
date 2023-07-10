@@ -203,8 +203,6 @@ public class HandlerDB
         if (filter == Book.Filter.ISBN || filter == Book.Filter.Title || filter == Book.Filter.Author)
         {
             queryFilter += $"WHERE { filter } LIKE '{ condition }%'";
-            Console.Write(queryFilter);
-            Console.ReadLine();
         }
         else
         {
