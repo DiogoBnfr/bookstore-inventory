@@ -14,8 +14,8 @@ public class HandlerDB
         {
             connection.Open();
 
-            const string query = "INSERT INTO Book (ISBN, Title, Author, Pages) " +
-                                 "VALUES (@ISBN,@Title, @Author, @Pages)";
+            const string query = "INSERT INTO Book (ISBN, Title, Author, Pages, PagesRead) " +
+                                 "VALUES (@ISBN,@Title, @Author, @Pages, @PagesRead)";
 
             using (SqlCommand command = new SqlCommand(query, connection))
             {
@@ -25,11 +25,13 @@ public class HandlerDB
                     string title = book.GetTitle();
                     string author = book.GetAuthor();
                     int pages = book.GetPages();
+                    int pagesread = book.GetPagesRead();
 
                     command.Parameters.AddWithValue("@ISBN", isbn);
                     command.Parameters.AddWithValue("@Title", title);
                     command.Parameters.AddWithValue("@Author", author);
                     command.Parameters.AddWithValue("@Pages", pages);
+                    command.Parameters.AddWithValue("@PagesRead", pagesread);
 
                     int rowsAffected = command.ExecuteNonQuery();
 
@@ -98,11 +100,22 @@ public class HandlerDB
         }
     }
 
-    public static void Update(string ISBN, string newTitle, string newAuthor, int newPages)
+    public static void Update(string ISBN, string newTitle, string newAuthor, int newPages, int newPagesRead)
     {
+        string totalPagesQuery;
+
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
+
+            totalPagesQuery = "SELECT Pages FROM Book WHERE ISBN = @ISBN";
+
+            int totalPages;
+            using (SqlCommand command = new SqlCommand(totalPagesQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ISBN", ISBN);
+                totalPages = Convert.ToInt32(command.ExecuteScalar());
+            }
 
             int queryFilters = 0;
 
@@ -123,6 +136,11 @@ public class HandlerDB
                 if (queryFilters > 0) query += ", ";
                 query += "Pages = @newPages"; 
             }
+            if (newPagesRead != 0)
+            {
+                if (queryFilters > 0) query += ", ";
+                query += "PagesRead = @newPagesRead";
+            }
             query += " WHERE ISBN = @ISBN";
 
             using (SqlCommand command = new SqlCommand(query, connection))
@@ -134,6 +152,22 @@ public class HandlerDB
                     if (newAuthor != "") command.Parameters.AddWithValue("@newAuthor", newAuthor);
                     if (newPages != 0) command.Parameters.AddWithValue("@newPages", newPages);
 
+                    if (newPagesRead > totalPages)
+                    {
+                        command.Parameters.AddWithValue("@newPagesRead", totalPages);
+                    }
+                    else if (newPagesRead <= 0)
+                    {
+                        command.Parameters.AddWithValue("@newPagesRead", 0);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@newPagesRead", newPagesRead);
+                    }
+                    
+
+                    Console.WriteLine(query);
+                    Console.ReadLine();
                     int rowsAffected = command.ExecuteNonQuery();
 
                     if (rowsAffected > 0)
